@@ -16,6 +16,9 @@
     <Filter Include="01. Manager">
       <UniqueIdentifier>{3f701bed-0991-491a-85fc-0e5ad21151d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="D3DDevice">
+      <UniqueIdentifier>{69246a98-0cc3-4ede-92f4-a1bfe079ecb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -29,6 +32,21 @@
     </ClInclude>
     <ClInclude Include="Macro.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework.h">
+      <Filter>01. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>D3DDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandQueue.h">
+      <Filter>D3DDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilBuffer.h">
+      <Filter>D3DDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>D3DDevice</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +65,21 @@
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
       <Filter>01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework.cpp">
+      <Filter>01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>D3DDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandQueue.cpp">
+      <Filter>D3DDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilBuffer.cpp">
+      <Filter>D3DDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.cpp">
+      <Filter>D3DDevice</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

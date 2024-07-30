@@ -15,6 +15,8 @@ private:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
+	class CGameFramework* m_gameFramework;
+
 	HINSTANCE	m_hInst = 0;
 	HWND		m_hWnd = 0;
 	HDC			m_hDC = 0;

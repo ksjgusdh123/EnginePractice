@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "GameFramework.h"
 
 DEFINITION_SINGLE(CEngine)
 bool CEngine::m_loop = true;
@@ -21,6 +22,9 @@ bool CEngine::Init(HINSTANCE hInst, int windowWidth, int windowHeight)
     m_resolution.height = windowHeight;
 
     Register();
+
+    m_gameFramework = new CGameFramework(m_hInst, m_hWnd, windowWidth, windowHeight);
+
     Create();
 
     return true;
@@ -60,7 +64,7 @@ void CEngine::Register()
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);  // 마우스 커서 모양
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = nullptr;// MAKEINTRESOURCEW(IDC_MY220428);  // 메뉴를 사용할 것인지
-    wcex.lpszClassName = TEXT("CrazyArcade");
+    wcex.lpszClassName = TEXT("EnginePractice");
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));   // 윈도우창 좌상단에 표시할 작은 아이콘
 
     RegisterClassExW(&wcex);
@@ -68,11 +72,14 @@ void CEngine::Register()
 
 bool CEngine::Create()
 {
-    m_hWnd = CreateWindowW(TEXT("CrazyArcade"), TEXT("CrazyArcade"), WS_OVERLAPPEDWINDOW, 
+    m_hWnd = CreateWindowW(TEXT("EnginePractice"), TEXT("EnginePractice"), WS_OVERLAPPEDWINDOW, 
         100, 0, 0, 0, nullptr, nullptr, m_hInst, nullptr);
 
     if (!m_hWnd)
         return false;
+
+    m_gameFramework = new CGameFramework(m_hInst, m_hWnd, m_resolution.width, m_resolution.height);
+    m_gameFramework->Init();
 
     RECT    rc = { 0, 0, m_resolution.width, m_resolution.height };
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
