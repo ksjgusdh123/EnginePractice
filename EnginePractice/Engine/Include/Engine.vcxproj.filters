@@ -48,6 +48,9 @@
     <ClInclude Include="SwapChain.h">
       <Filter>D3DDevice</Filter>
     </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc">

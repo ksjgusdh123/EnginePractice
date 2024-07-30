@@ -44,11 +44,16 @@ int CEngine::Run()
         else
         {
             // TODO: ÄÁÅÙÃ÷ ·ÎÁ÷
-            int a = 0;
+            m_gameFramework->Render();
         }
     }
 
     return (int)msg.wParam;
+}
+
+CGameFramework* CEngine::GetFramework()
+{
+    return m_gameFramework;
 }
 
 void CEngine::Register()

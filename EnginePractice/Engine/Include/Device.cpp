@@ -34,6 +34,4 @@ void CDevice::Init()
 		m_factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter));
 		hResult = D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_device));
 	}
-
-
 }

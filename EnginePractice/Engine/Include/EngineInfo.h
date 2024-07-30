@@ -25,6 +25,7 @@
 
 #include <d3d12.h>
 #include <dxgi1_4.h>
+#include "d3dx12.h"
 #include <D3Dcompiler.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
@@ -54,8 +55,14 @@ struct Resolution
 
 struct ScreenInfo
 {
+	HWND	hWnd;
 	int		width;
 	int		height;
 	bool	bMsaa4xEnable;
 	UINT	nMsaa4xQualityLevels;
+};
+
+enum
+{
+	SWAP_CHAIN_BUFFER_COUNT = 2
 };

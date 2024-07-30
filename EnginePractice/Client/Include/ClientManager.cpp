@@ -3,7 +3,7 @@
 CClientManager::CClientManager()
 {
 }
-
+ 
 CClientManager::~CClientManager()
 {
     CEngine::GetInst()->DestroyInst();

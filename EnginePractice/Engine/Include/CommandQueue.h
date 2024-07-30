@@ -2,10 +2,16 @@
 class CCommandQueue
 {
 public:
+	ID3D12CommandQueue* GetCmdQueue() { return m_cmdQueue; }
+
+public:
 
 	void Init(ID3D12Device* device, class CSwapChain* swapChain);
 
 	void WaitGpuComplete();
+
+	void RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect);
+	void RenderEnd();
 
 private:
 	ID3D12CommandQueue			*m_cmdQueue;

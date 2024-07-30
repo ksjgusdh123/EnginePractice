@@ -1,6 +1,9 @@
 #include "EngineInfo.h"
+#include "Engine.h"
 #include "CommandQueue.h"
 #include "SwapChain.h"
+#include "GameFramework.h"
+#include "DepthStencilBuffer.h"
 
 void CCommandQueue::Init(ID3D12Device* device, CSwapChain* swapChain)
 {
@@ -30,4 +33,48 @@ void CCommandQueue::WaitGpuComplete()
 		hResult = m_fence->SetEventOnCompletion(nFenceValue, m_fenceEvent);
 		::WaitForSingleObject(m_fenceEvent, INFINITE);
 	}
+}
+
+void CCommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
+{
+	m_cmdAlloc->Reset();
+	m_cmdList->Reset(m_cmdAlloc, nullptr);
+
+
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		m_swapChain->GetBackRTVBuffer(),
+		D3D12_RESOURCE_STATE_PRESENT, 
+		D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+	m_cmdList->ResourceBarrier(1, &barrier);
+
+	m_cmdList->RSSetViewports(1, vp);
+	m_cmdList->RSSetScissorRects(1, rect);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = m_swapChain->GetBackRTV();
+	m_cmdList->ClearRenderTargetView(backBufferView, Colors::Blue, 0, nullptr);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = CEngine::GetInst()->GetFramework()->GetDepthStencilBuffer()->GetDsvCpuHandle();
+	m_cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, &depthStencilView);
+	m_cmdList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0.0f, 0, nullptr);
+}
+
+void CCommandQueue::RenderEnd()
+{
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		m_swapChain->GetBackRTVBuffer(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET, 
+		D3D12_RESOURCE_STATE_PRESENT); 
+
+	m_cmdList->ResourceBarrier(1, &barrier);
+	m_cmdList->Close();
+
+	ID3D12CommandList* cmdListArr[] = { m_cmdList };
+	m_cmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	m_swapChain->Present();
+
+	WaitGpuComplete();
+
+	m_swapChain->SwapIndex();
 }
