@@ -3,7 +3,6 @@
 #include "Engine.h"
 #include "GameFramework.h"
 #include "DepthStencilBuffer.h"
-#include "Device.h"
 #include "RootSignature.h"
 #include "CommandQueue.h"
 
@@ -76,7 +75,7 @@ void CShader::Init(const std::wstring& path, ShaderInfo info)
 		break;
 	}
 
-	CEngine::GetInst()->GetFramework()->GetDevice()->GetDevice()->CreateGraphicsPipelineState(&m_pipelineDesc, IID_PPV_ARGS(&m_pipelineState));
+	CEngine::GetInst()->GetFramework()->GetDevice()->CreateGraphicsPipelineState(&m_pipelineDesc, IID_PPV_ARGS(&m_pipelineState));
 }
 
 void CShader::Update()

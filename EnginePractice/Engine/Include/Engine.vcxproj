@@ -153,9 +153,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CommandQueue.h" />
+    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DepthStencilBuffer.h" />
-    <ClInclude Include="Device.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="Engine.h" />
@@ -169,8 +169,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandQueue.cpp" />
+    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DepthStencilBuffer.cpp" />
-    <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="RootSignature.cpp" />

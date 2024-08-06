@@ -13,9 +13,11 @@ public:
 
 public:
 	class CDepthStencilBuffer* GetDepthStencilBuffer() { return m_depthStencilBuffer; }
-	class CDevice* GetDevice() { return m_device; }
 	class CRootSignature* GetRootSignature() { return m_rootSignature; }
 	class CCommandQueue* GetcmdQueue() { return m_cmdQueue; }
+	ID3D12Device* GetDevice() { return m_device; }
+
+	class CConstantBuffer* GetConstantBuffer(CONSTANT_BUFFER_TYPE type);
 public:
 	bool Init();
 	void Update();
@@ -23,29 +25,37 @@ public:
 	void RenderBegin();
 	void RenderEnd();
 
-
+private:
+	void InitDevice();
 	void CheckMsaa();
 
+	void CreateConstantBuffer(UINT32 bufferSize, UINT32 count);
+
 private:
-	HINSTANCE					m_hInst = 0;
-	HWND						m_hWnd = 0;
-	D3D12_VIEWPORT				m_viewport;
-	D3D12_RECT					m_scissorRect;
+	HINSTANCE						m_hInst = 0;
+	HWND							m_hWnd = 0;
+	D3D12_VIEWPORT					m_viewport;
+	D3D12_RECT						m_scissorRect;
 
-	ScreenInfo					m_screenInfo;
+	ScreenInfo						m_screenInfo;
 
-	int							m_windowWidth;
-	int							m_windowHeight;
+	int								m_windowWidth;
+	int								m_windowHeight;
 
 
-	CDevice				* m_device;
-	CCommandQueue		*m_cmdQueue;
-	class CSwapChain	*m_swapChain;
-	CDepthStencilBuffer	*m_depthStencilBuffer;
-	CRootSignature		*m_rootSignature;
-	class CShader		*m_shader;
+	IDXGIFactory4					*m_factory;
+	ID3D12Device					*m_device;
 
-	ComPtr<ID3D12Resource> m_vertexBuffer;
-	D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
+	CCommandQueue					*m_cmdQueue;
+	class CSwapChain				*m_swapChain;
+	CDepthStencilBuffer				*m_depthStencilBuffer;
+	CRootSignature					*m_rootSignature;
+	class CShader					*m_shader;
+	std::vector<CConstantBuffer*>	m_constantBuffers;
+
+
+
+	ComPtr<ID3D12Resource>		m_vertexBuffer;
+	D3D12_VERTEX_BUFFER_VIEW	m_vertexBufferView;
 };
 

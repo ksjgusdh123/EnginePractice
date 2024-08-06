@@ -69,6 +69,14 @@ enum
 	SWAP_CHAIN_BUFFER_COUNT = 2
 };
 
+enum class CONSTANT_BUFFER_TYPE : UINT8
+{
+    GLOBAL,
+    TRANSFORM,
+    MATERIAL,
+    END
+};
+
 #include <filesystem>
 #include <shlobj.h>
 

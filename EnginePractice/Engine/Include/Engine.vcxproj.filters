@@ -36,9 +36,6 @@
     <ClInclude Include="GameFramework.h">
       <Filter>01. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>D3DDevice</Filter>
-    </ClInclude>
     <ClInclude Include="CommandQueue.h">
       <Filter>D3DDevice</Filter>
     </ClInclude>
@@ -55,6 +52,9 @@
       <Filter>D3DDevice</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
+      <Filter>D3DDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
       <Filter>D3DDevice</Filter>
     </ClInclude>
   </ItemGroup>
@@ -78,9 +78,6 @@
     <ClCompile Include="GameFramework.cpp">
       <Filter>01. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>D3DDevice</Filter>
-    </ClCompile>
     <ClCompile Include="CommandQueue.cpp">
       <Filter>D3DDevice</Filter>
     </ClCompile>
@@ -94,6 +91,9 @@
       <Filter>D3DDevice</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
+      <Filter>D3DDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
       <Filter>D3DDevice</Filter>
     </ClCompile>
   </ItemGroup>

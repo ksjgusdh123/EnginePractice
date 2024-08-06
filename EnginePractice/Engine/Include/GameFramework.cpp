@@ -1,11 +1,11 @@
 #include "EngineInfo.h"
 #include "GameFramework.h"
-#include "Device.h"
 #include "SwapChain.h"
 #include "CommandQueue.h"
 #include "DepthStencilBuffer.h"
 #include "RootSignature.h"
 #include "Shader.h"
+#include "ConstantBuffer.h"
 
 CGameFramework::CGameFramework(HINSTANCE hInst, HWND hWnd, int windowWidth, int windowHeight)
 	: m_hInst(hInst), m_hWnd(hWnd)
@@ -14,7 +14,6 @@ CGameFramework::CGameFramework(HINSTANCE hInst, HWND hWnd, int windowWidth, int 
 	m_screenInfo.height = windowHeight;
 	m_screenInfo.hWnd = hWnd;
 
-	m_device = new CDevice();
 	m_swapChain = new CSwapChain();
 	m_cmdQueue = new CCommandQueue();
 	m_depthStencilBuffer = new CDepthStencilBuffer();
@@ -22,16 +21,21 @@ CGameFramework::CGameFramework(HINSTANCE hInst, HWND hWnd, int windowWidth, int 
 	m_shader = new CShader();
 }
 
+CConstantBuffer* CGameFramework::GetConstantBuffer(CONSTANT_BUFFER_TYPE type)
+{
+	return m_constantBuffers[static_cast<UINT8>(type)];
+}
+
 bool CGameFramework::Init()
 {
 	m_viewport = { 0, 0, static_cast<FLOAT>(m_screenInfo.width), static_cast<FLOAT>(m_screenInfo.height), 0.0f, 1.0f };
 	m_scissorRect = CD3DX12_RECT(0, 0, m_screenInfo.width, m_screenInfo.height);
 
-	m_device->Init();
-	m_cmdQueue->Init(m_device->GetDevice(), m_swapChain);
+	InitDevice();
+	m_cmdQueue->Init(m_device, m_swapChain);
 	CheckMsaa();
-	m_swapChain->Init(m_device->GetDevice(), m_device->GetDXGIFactory(), m_cmdQueue->GetCmdQueue(), m_screenInfo);
-	m_depthStencilBuffer->Init(m_device->GetDevice(), m_screenInfo);
+	m_swapChain->Init(m_device, m_factory, m_cmdQueue->GetCmdQueue(), m_screenInfo);
+	m_depthStencilBuffer->Init(m_device, m_screenInfo);
 	m_rootSignature->Init();
 
 	ShaderInfo info =
@@ -41,6 +45,7 @@ bool CGameFramework::Init()
 	};
 	m_shader->Init(L"..\\..\\Engine\\Include\\shader.hlsl", info);
 
+	CreateConstantBuffer(sizeof(XMFLOAT3), 1);
 
 	// Create the vertex buffer.
 	{
@@ -60,7 +65,7 @@ bool CGameFramework::Init()
 		// code simplicity and because there are very few verts to actually transfer.
 		D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 		D3D12_RESOURCE_DESC re = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
-		(m_device->GetDevice()->CreateCommittedResource(
+		(m_device->CreateCommittedResource(
 			&prop,
 			D3D12_HEAP_FLAG_NONE,
 			&re,
@@ -81,6 +86,7 @@ bool CGameFramework::Init()
 		m_vertexBufferView.SizeInBytes = vertexBufferSize;
 	}
 
+
 	return true;
 }
 
@@ -92,6 +98,9 @@ void CGameFramework::Update()
 void CGameFramework::Render()
 {
 	RenderBegin();
+
+	XMFLOAT3 pos(0.5, 0.5, 0.5);
+	GetConstantBuffer(CONSTANT_BUFFER_TYPE::GLOBAL)->PushConstantBufferViewData(m_cmdQueue->GetCmdList(), &pos, sizeof(pos));
 	m_shader->Update();
 	RenderEnd();
 }
@@ -100,12 +109,46 @@ void CGameFramework::RenderBegin()
 {
 	m_cmdQueue->RenderBegin(&m_viewport, &m_scissorRect);
 	m_cmdQueue->GetCmdList()->IASetVertexBuffers(0, 1, &m_vertexBufferView);
-
 }
 
 void CGameFramework::RenderEnd()
 {
 	m_cmdQueue->RenderEnd();
+}
+
+void CGameFramework::InitDevice()
+{
+	HRESULT hResult;
+
+	UINT nDXGIFactoryFlags = 0;
+#if defined(_DEBUG)
+	ID3D12Debug* debugController = NULL;
+	hResult = D3D12GetDebugInterface(__uuidof(ID3D12Debug), (void**)&debugController);
+	if (debugController)
+	{
+		debugController->EnableDebugLayer();
+		debugController->Release();
+	}
+	nDXGIFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+#endif
+
+	hResult = CreateDXGIFactory2(nDXGIFactoryFlags, IID_PPV_ARGS(&m_factory));
+
+	IDXGIAdapter1* adapter = NULL;
+
+	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != m_factory->EnumAdapters1(i, &adapter); i++)
+	{
+		DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
+		adapter->GetDesc1(&dxgiAdapterDesc);
+		if (dxgiAdapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) continue;
+		if (SUCCEEDED(D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_device)))) break;
+	}
+
+	if (!m_device)
+	{
+		m_factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter));
+		hResult = D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_device));
+	}
 }
 
 void CGameFramework::CheckMsaa()
@@ -115,7 +158,14 @@ void CGameFramework::CheckMsaa()
 	d3dMsaaQualityLevels.SampleCount = 4;
 	d3dMsaaQualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
 	d3dMsaaQualityLevels.NumQualityLevels = 0;
-	HRESULT	hResult = m_device->GetDevice()->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &d3dMsaaQualityLevels, sizeof(D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS));
+	HRESULT	hResult = m_device->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &d3dMsaaQualityLevels, sizeof(D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS));
 	m_screenInfo.nMsaa4xQualityLevels = d3dMsaaQualityLevels.NumQualityLevels;
 	m_screenInfo.bMsaa4xEnable = (m_screenInfo.nMsaa4xQualityLevels > 1) ? true : false;
+}
+
+void CGameFramework::CreateConstantBuffer(UINT32 bufferSize, UINT32 count)
+{
+	CConstantBuffer* buffer = new CConstantBuffer();
+	buffer->Init(m_device, bufferSize, count);
+	m_constantBuffers.push_back(buffer);
 }

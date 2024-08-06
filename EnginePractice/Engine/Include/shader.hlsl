@@ -9,6 +9,11 @@
 //
 //*********************************************************
 
+cbuffer GLOBAL_PARAMS : register(b0)
+{
+    float3 pos;
+}
+
 struct PSInput
 {
     float4 position : SV_POSITION;
@@ -19,7 +24,7 @@ PSInput VSMain(float4 position : POSITION, float4 color : COLOR)
 {
     PSInput result;
 
-    result.position = position;
+    result.position = float4(position.xy + pos.xy, position.z, 1);
     result.color = color;
 
     return result;
