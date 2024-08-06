@@ -4,6 +4,7 @@
 #include "SwapChain.h"
 #include "GameFramework.h"
 #include "DepthStencilBuffer.h"
+#include "RootSignature.h"
 
 void CCommandQueue::Init(ID3D12Device* device, CSwapChain* swapChain)
 {
@@ -46,21 +47,26 @@ void CCommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect
 		D3D12_RESOURCE_STATE_PRESENT, 
 		D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	m_cmdList->ResourceBarrier(1, &barrier);
-
+	m_cmdList->SetGraphicsRootSignature(CEngine::GetInst()->GetFramework()->GetRootSignature()->GetRootSignature());
 	m_cmdList->RSSetViewports(1, vp);
 	m_cmdList->RSSetScissorRects(1, rect);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = m_swapChain->GetBackRTV();
-	m_cmdList->ClearRenderTargetView(backBufferView, Colors::Blue, 0, nullptr);
+	m_cmdList->ResourceBarrier(1, &barrier);
 
+	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = m_swapChain->GetBackRTV();
 	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = CEngine::GetInst()->GetFramework()->GetDepthStencilBuffer()->GetDsvCpuHandle();
+
 	m_cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, &depthStencilView);
-	m_cmdList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0.0f, 0, nullptr);
+	m_cmdList->ClearRenderTargetView(backBufferView, Colors::Black, 0, nullptr);
+	m_cmdList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, (UINT8)0.0f, 0, nullptr);
+
+	m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void CCommandQueue::RenderEnd()
 {
+	m_cmdList->DrawInstanced(3, 1, 0, 0);
+
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
 		m_swapChain->GetBackRTVBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, 

@@ -3,7 +3,7 @@ class CCommandQueue
 {
 public:
 	ID3D12CommandQueue* GetCmdQueue() { return m_cmdQueue; }
-
+	ID3D12GraphicsCommandList* GetCmdList() { return m_cmdList; }
 public:
 
 	void Init(ID3D12Device* device, class CSwapChain* swapChain);

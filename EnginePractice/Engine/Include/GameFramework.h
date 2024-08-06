@@ -1,5 +1,11 @@
 #pragma once
 
+struct Vertex
+{
+	XMFLOAT3 position;
+	XMFLOAT4 color;
+};
+
 class CGameFramework
 {
 public:
@@ -7,8 +13,9 @@ public:
 
 public:
 	class CDepthStencilBuffer* GetDepthStencilBuffer() { return m_depthStencilBuffer; }
-
-
+	class CDevice* GetDevice() { return m_device; }
+	class CRootSignature* GetRootSignature() { return m_rootSignature; }
+	class CCommandQueue* GetcmdQueue() { return m_cmdQueue; }
 public:
 	bool Init();
 	void Update();
@@ -31,9 +38,14 @@ private:
 	int							m_windowHeight;
 
 
-	class CDevice				* m_device;
-	class CCommandQueue			* m_cmdQueue;
-	class CSwapChain			*m_swapChain;
+	CDevice				* m_device;
+	CCommandQueue		*m_cmdQueue;
+	class CSwapChain	*m_swapChain;
 	CDepthStencilBuffer	*m_depthStencilBuffer;
+	CRootSignature		*m_rootSignature;
+	class CShader		*m_shader;
+
+	ComPtr<ID3D12Resource> m_vertexBuffer;
+	D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
 };
 

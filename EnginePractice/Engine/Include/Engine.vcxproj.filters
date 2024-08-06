@@ -51,6 +51,12 @@
     <ClInclude Include="d3dx12.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>D3DDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>D3DDevice</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc">
@@ -84,5 +90,19 @@
     <ClCompile Include="SwapChain.cpp">
       <Filter>D3DDevice</Filter>
     </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>D3DDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>D3DDevice</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader.hlsl">
+      <Filter>헤더 파일</Filter>
+    </FxCompile>
+    <FxCompile Include="VS.hlsl">
+      <Filter>헤더 파일</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

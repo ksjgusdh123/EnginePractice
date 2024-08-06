@@ -4,6 +4,8 @@
 #include "SwapChain.h"
 #include "CommandQueue.h"
 #include "DepthStencilBuffer.h"
+#include "RootSignature.h"
+#include "Shader.h"
 
 CGameFramework::CGameFramework(HINSTANCE hInst, HWND hWnd, int windowWidth, int windowHeight)
 	: m_hInst(hInst), m_hWnd(hWnd)
@@ -16,6 +18,8 @@ CGameFramework::CGameFramework(HINSTANCE hInst, HWND hWnd, int windowWidth, int 
 	m_swapChain = new CSwapChain();
 	m_cmdQueue = new CCommandQueue();
 	m_depthStencilBuffer = new CDepthStencilBuffer();
+	m_rootSignature = new CRootSignature();
+	m_shader = new CShader();
 }
 
 bool CGameFramework::Init()
@@ -28,6 +32,55 @@ bool CGameFramework::Init()
 	CheckMsaa();
 	m_swapChain->Init(m_device->GetDevice(), m_device->GetDXGIFactory(), m_cmdQueue->GetCmdQueue(), m_screenInfo);
 	m_depthStencilBuffer->Init(m_device->GetDevice(), m_screenInfo);
+	m_rootSignature->Init();
+
+	ShaderInfo info =
+	{
+		RASTERIZER_TYPE::CULL_NONE,
+		DEPTH_STENCIL_TYPE::LESS_EQUAL
+	};
+	m_shader->Init(L"..\\..\\Engine\\Include\\shader.hlsl", info);
+
+
+	// Create the vertex buffer.
+	{
+		// Define the geometry for a triangle.
+		Vertex triangleVertices[] =
+		{
+			{ { 0.0f, 0.25f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+			{ { 0.25f, -0.25f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+			{ { -0.25f, -0.25f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
+		};
+
+		const UINT vertexBufferSize = sizeof(triangleVertices);
+
+		// Note: using upload heaps to transfer static data like vert buffers is not 
+		// recommended. Every time the GPU needs it, the upload heap will be marshalled 
+		// over. Please read up on Default Heap usage. An upload heap is used here for 
+		// code simplicity and because there are very few verts to actually transfer.
+		D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+		D3D12_RESOURCE_DESC re = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
+		(m_device->GetDevice()->CreateCommittedResource(
+			&prop,
+			D3D12_HEAP_FLAG_NONE,
+			&re,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&m_vertexBuffer)));
+
+		// Copy the triangle data to the vertex buffer.
+		UINT8* pVertexDataBegin;
+		CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
+		(m_vertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)));
+		memcpy(pVertexDataBegin, triangleVertices, sizeof(triangleVertices));
+		m_vertexBuffer->Unmap(0, nullptr);
+
+		// Initialize the vertex buffer view.
+		m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
+		m_vertexBufferView.StrideInBytes = sizeof(Vertex);
+		m_vertexBufferView.SizeInBytes = vertexBufferSize;
+	}
+
 	return true;
 }
 
@@ -39,12 +92,15 @@ void CGameFramework::Update()
 void CGameFramework::Render()
 {
 	RenderBegin();
+	m_shader->Update();
 	RenderEnd();
 }
 
 void CGameFramework::RenderBegin()
 {
 	m_cmdQueue->RenderBegin(&m_viewport, &m_scissorRect);
+	m_cmdQueue->GetCmdList()->IASetVertexBuffers(0, 1, &m_vertexBufferView);
+
 }
 
 void CGameFramework::RenderEnd()

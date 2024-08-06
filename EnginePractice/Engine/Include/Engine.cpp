@@ -44,7 +44,7 @@ int CEngine::Run()
         else
         {
             // TODO: ÄÁÅÙÃ÷ ·ÎÁ÷
-            m_gameFramework->Render();
+            m_gameFramework->Update();
         }
     }
 

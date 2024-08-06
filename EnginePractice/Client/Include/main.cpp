@@ -7,7 +7,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_ int       nCmdShow)
 {
     CClientManager mgr;
-
+    if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
+    {
+        LoadLibrary(GetLatestWinPixGpuCapturerPath_Cpp17().c_str());
+    }
     if (!mgr.Init(hInstance))
         return 0;
 
