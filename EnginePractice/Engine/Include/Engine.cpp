@@ -1,5 +1,7 @@
 #include "Engine.h"
 #include "GameFramework.h"
+#include "SceneManager.h"
+#include "CommandQueue.h"
 
 DEFINITION_SINGLE(CEngine)
 bool CEngine::m_loop = true;
@@ -24,8 +26,10 @@ bool CEngine::Init(HINSTANCE hInst, int windowWidth, int windowHeight)
     m_resolution.height = windowHeight;
 
     Register();
-
     Create();
+
+    if (!CSceneManager::GetInst()->Init(m_gameFramework->GetDevice()))
+        return false;
 
     return true;
 }
@@ -44,7 +48,7 @@ int CEngine::Run()
         else
         {
             // TODO: 컨텐츠 로직
-            m_gameFramework->Update();
+            Logic();
         }
     }
 
@@ -54,6 +58,37 @@ int CEngine::Run()
 CGameFramework* CEngine::GetFramework()
 {
     return m_gameFramework;
+}
+
+void CEngine::Logic()
+{
+    float elapsedTime = 0.f;
+
+    // Scene이 교체될 경우 처음부터 다시 동작시킨다
+    if (Update(elapsedTime))
+        return;
+
+    if (PostUpdate(elapsedTime))
+        return;
+
+    Render(elapsedTime);
+}
+
+bool CEngine::Update(float elapsedTime)
+{
+    return CSceneManager::GetInst()->Update(elapsedTime);
+}
+
+bool CEngine::PostUpdate(float elapsedTime)
+{
+    return CSceneManager::GetInst()->PostUpdate(elapsedTime);
+}
+
+void CEngine::Render(float elapsedTime)
+{
+    m_gameFramework->RenderBegin();
+    CSceneManager::GetInst()->Render(m_gameFramework->GetcmdQueue()->GetCmdList(), elapsedTime);
+    m_gameFramework->RenderEnd();
 }
 
 void CEngine::Register()

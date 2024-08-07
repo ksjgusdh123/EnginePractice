@@ -19,6 +19,12 @@
     <Filter Include="02. D3DDevice">
       <UniqueIdentifier>{69246a98-0cc3-4ede-92f4-a1bfe079ecb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Scene">
+      <UniqueIdentifier>{c69263d6-833f-4217-95be-b0f6f10789c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Resource">
+      <UniqueIdentifier>{72e2a41b-762f-4c18-ae0a-0e18c217de2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -56,6 +62,18 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>02. D3DDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultScene.h">
+      <Filter>03. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>03. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>03. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>04. Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +113,18 @@
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>02. D3DDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultScene.cpp">
+      <Filter>03. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>03. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>03. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>04. Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

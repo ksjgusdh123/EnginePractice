@@ -16,6 +16,9 @@
     <Filter Include="01. ClientManager">
       <UniqueIdentifier>{b141bf39-3c4f-464e-b2bc-560278e92aa6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Scene">
+      <UniqueIdentifier>{6de11782-d1d6-4e5c-8bf3-ed2870e29d23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -29,6 +32,9 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MainScene.h">
+      <Filter>02. Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -51,5 +57,11 @@
     <ClCompile Include="ClientManager.cpp">
       <Filter>01. ClientManager</Filter>
     </ClCompile>
+    <ClCompile Include="MainScene.cpp">
+      <Filter>02. Scene</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

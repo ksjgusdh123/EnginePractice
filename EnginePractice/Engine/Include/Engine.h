@@ -11,6 +11,12 @@ public:
 public:
 	class CGameFramework* GetFramework();
 
+public:
+	void Logic();
+	bool Update(float elapsedTime);
+	bool PostUpdate(float elapsedTime);
+	void Render(float elapsedTime);
+
 private:
 	void Register();	// 창 클래스 등록
 	bool Create();

@@ -69,14 +69,10 @@ void CCommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect
 	m_cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, &depthStencilView);
 	m_cmdList->ClearRenderTargetView(backBufferView, Colors::Black, 0, nullptr);
 	m_cmdList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, (UINT8)0.0f, 0, nullptr);
-
-	m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void CCommandQueue::RenderEnd()
 {
-	m_cmdList->DrawInstanced(3, 1, 0, 0);
-
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
 		m_swapChain->GetBackRTVBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, 

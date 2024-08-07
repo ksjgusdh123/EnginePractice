@@ -1,11 +1,5 @@
 #pragma once
 
-struct Vertex
-{
-	XMFLOAT3 position;
-	XMFLOAT4 color;
-};
-
 class CGameFramework
 {
 public:
@@ -53,7 +47,6 @@ private:
 	CRootSignature					*m_rootSignature;
 	class CShader					*m_shader;
 	std::vector<CConstantBuffer*>	m_constantBuffers;
-
 
 
 	ComPtr<ID3D12Resource>		m_vertexBuffer;

@@ -48,48 +48,7 @@ bool CGameFramework::Init()
 		DEPTH_STENCIL_TYPE::LESS_EQUAL
 	};
 	m_shader->Init(L"..\\..\\Engine\\Include\\shader.hlsl", info);
-
 	CreateConstantBuffer(sizeof(XMFLOAT3), 1);
-
-	// Create the vertex buffer.
-	{
-		// Define the geometry for a triangle.
-		Vertex triangleVertices[] =
-		{
-			{ { 0.0f, 0.25f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-			{ { 0.25f, -0.25f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-			{ { -0.25f, -0.25f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
-		};
-
-		const UINT vertexBufferSize = sizeof(triangleVertices);
-
-		// Note: using upload heaps to transfer static data like vert buffers is not 
-		// recommended. Every time the GPU needs it, the upload heap will be marshalled 
-		// over. Please read up on Default Heap usage. An upload heap is used here for 
-		// code simplicity and because there are very few verts to actually transfer.
-		D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-		D3D12_RESOURCE_DESC re = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
-		(m_device->CreateCommittedResource(
-			&prop,
-			D3D12_HEAP_FLAG_NONE,
-			&re,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&m_vertexBuffer)));
-
-		// Copy the triangle data to the vertex buffer.
-		UINT8* pVertexDataBegin;
-		CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
-		(m_vertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)));
-		memcpy(pVertexDataBegin, triangleVertices, sizeof(triangleVertices));
-		m_vertexBuffer->Unmap(0, nullptr);
-
-		// Initialize the vertex buffer view.
-		m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
-		m_vertexBufferView.StrideInBytes = sizeof(Vertex);
-		m_vertexBufferView.SizeInBytes = vertexBufferSize;
-	}
-
 
 	return true;
 }
@@ -103,16 +62,17 @@ void CGameFramework::Render()
 {
 	RenderBegin();
 
-	XMFLOAT3 pos(0.5, 0.5, 0.5);
-	GetConstantBuffer(CONSTANT_BUFFER_TYPE::GLOBAL)->PushConstantBufferViewData(m_cmdQueue->GetCmdList(), &pos, sizeof(pos));
-	m_shader->Update();
+	
 	RenderEnd();
 }
 
 void CGameFramework::RenderBegin()
 {
 	m_cmdQueue->RenderBegin(&m_viewport, &m_scissorRect);
-	m_cmdQueue->GetCmdList()->IASetVertexBuffers(0, 1, &m_vertexBufferView);
+	// temp
+	XMFLOAT3 pos(0.5, 0.5, 0.5);
+	GetConstantBuffer(CONSTANT_BUFFER_TYPE::GLOBAL)->PushConstantBufferViewData(m_cmdQueue->GetCmdList(), &pos, sizeof(pos));
+	m_shader->Update();
 }
 
 void CGameFramework::RenderEnd()
