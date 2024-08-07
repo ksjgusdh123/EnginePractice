@@ -10,7 +10,7 @@ class CGameFramework
 {
 public:
 	CGameFramework(HINSTANCE hInst, HWND hWnd, int windowWidth, int windowHeight);
-
+	~CGameFramework();
 public:
 	class CDepthStencilBuffer* GetDepthStencilBuffer() { return m_depthStencilBuffer; }
 	class CRootSignature* GetRootSignature() { return m_rootSignature; }
@@ -24,6 +24,7 @@ public:
 	void Render();
 	void RenderBegin();
 	void RenderEnd();
+	void OnDestroy();
 
 private:
 	void InitDevice();

@@ -7,7 +7,8 @@ public:
 
 public:
 	void Init(ID3D12Device* device, ScreenInfo& info, DXGI_FORMAT format = DXGI_FORMAT_D24_UNORM_S8_UINT);
-	
+	void OnDestroy();
+
 private:
 	ID3D12Resource				*m_dsvBuffer;
 	ID3D12DescriptorHeap		*m_dsvHeap;

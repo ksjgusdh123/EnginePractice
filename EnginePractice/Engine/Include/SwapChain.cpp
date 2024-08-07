@@ -7,6 +7,19 @@ void CSwapChain::Init(ID3D12Device* device, IDXGIFactory* factory, ID3D12Command
 	CreateRTV(device);
 }
 
+void CSwapChain::OnDestroy()
+{
+	for (int i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i)
+	{
+		if (m_rtvBuffer[i]) m_rtvBuffer[i]->Release();
+	}
+
+	if (m_rtvHeap) m_rtvHeap->Release();
+
+	m_swapChain->SetFullscreenState(FALSE, NULL);
+	if (m_swapChain) m_swapChain->Release();
+}
+
 void CSwapChain::CreateSwapChain(IDXGIFactory* factory, ID3D12CommandQueue* cmdQueue, ScreenInfo& info, bool windowed)
 {
 	DXGI_SWAP_CHAIN_DESC sd;

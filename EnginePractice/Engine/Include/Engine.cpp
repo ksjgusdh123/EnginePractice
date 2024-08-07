@@ -7,11 +7,13 @@ bool CEngine::m_loop = true;
 CEngine::CEngine()
 {
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    //_CrtSetBreakAlloc(100);
+    _CrtSetBreakAlloc(100);
 }
 
 CEngine::~CEngine()
 {
+    m_gameFramework->OnDestroy();
+    delete m_gameFramework;
 }
 
 bool CEngine::Init(HINSTANCE hInst, int windowWidth, int windowHeight)
@@ -22,8 +24,6 @@ bool CEngine::Init(HINSTANCE hInst, int windowWidth, int windowHeight)
     m_resolution.height = windowHeight;
 
     Register();
-
-    m_gameFramework = new CGameFramework(m_hInst, m_hWnd, windowWidth, windowHeight);
 
     Create();
 

@@ -36,3 +36,8 @@ void CRootSignature::CreateRootSignature()
 	if (pd3dSignatureBlob) pd3dSignatureBlob->Release();
 	if (pd3dErrorBlob) pd3dErrorBlob->Release();
 }
+
+void CRootSignature::OnDestroy()
+{
+	if (m_rootSignature) m_rootSignature->Release();
+}

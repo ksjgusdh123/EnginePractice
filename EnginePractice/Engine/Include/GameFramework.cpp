@@ -21,6 +21,10 @@ CGameFramework::CGameFramework(HINSTANCE hInst, HWND hWnd, int windowWidth, int 
 	m_shader = new CShader();
 }
 
+CGameFramework::~CGameFramework()
+{
+}
+
 CConstantBuffer* CGameFramework::GetConstantBuffer(CONSTANT_BUFFER_TYPE type)
 {
 	return m_constantBuffers[static_cast<UINT8>(type)];
@@ -116,6 +120,29 @@ void CGameFramework::RenderEnd()
 	m_cmdQueue->RenderEnd();
 }
 
+void CGameFramework::OnDestroy()
+{
+	for (int i = 0; i < 1; ++i)
+	{
+		m_constantBuffers[i]->tempDestroy();
+		delete m_constantBuffers[i];
+	}
+	m_depthStencilBuffer->OnDestroy();
+	m_swapChain->OnDestroy();
+	m_cmdQueue->OnDestroy();
+	m_shader->tempDestroy();
+	m_rootSignature->OnDestroy();
+
+	if (m_device) m_device->Release();
+	if (m_factory) m_factory->Release();
+
+	delete m_depthStencilBuffer;
+	delete m_swapChain;
+	delete m_cmdQueue;
+	delete m_shader;
+	delete m_rootSignature;
+}
+
 void CGameFramework::InitDevice()
 {
 	HRESULT hResult;
@@ -149,6 +176,8 @@ void CGameFramework::InitDevice()
 		m_factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter));
 		hResult = D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_device));
 	}
+
+	if (adapter) adapter->Release();
 }
 
 void CGameFramework::CheckMsaa()

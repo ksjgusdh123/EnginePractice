@@ -25,6 +25,16 @@ void CCommandQueue::Init(ID3D12Device* device, CSwapChain* swapChain)
 	m_fenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
 
+void CCommandQueue::OnDestroy()
+{
+	::CloseHandle(m_fenceEvent);
+
+	if (m_cmdAlloc) m_cmdAlloc->Release();
+	if (m_cmdQueue) m_cmdQueue->Release();
+	if (m_cmdList) m_cmdList->Release();
+	if (m_fence) m_fence->Release();
+}
+
 void CCommandQueue::WaitGpuComplete()
 {
 	UINT64 nFenceValue = ++m_fenceValue;

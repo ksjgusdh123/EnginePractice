@@ -12,6 +12,7 @@ public:
 public:
 	void Init(ID3D12Device* device, UINT32 size, UINT32 count);
 	void Clear();
+	void tempDestroy();
 
 	void PushData(void* buffer, UINT32 size);
 	void PushConstantBufferViewData(ID3D12GraphicsCommandList* cmdList, void* buffer, UINT32 size);

@@ -7,13 +7,15 @@ CConstantBuffer::CConstantBuffer()
 
 CConstantBuffer::~CConstantBuffer()
 {
-	if (m_cbvBuffer)
-	{
-		if (m_cbvBuffer != nullptr)
-			m_cbvBuffer->Unmap(0, nullptr);
-
-		m_cbvBuffer = nullptr;
-	}
+	//if (m_cbvBuffer)
+	//{
+	//	if (m_cbvBuffer != nullptr)
+	//		m_cbvBuffer->Unmap(0, nullptr);
+	//
+	//	//m_cbvBuffer = nullptr;
+	//	m_cbvBuffer->Release();
+	//}
+	//if (m_cbvHeap) m_cbvHeap->Release();
 }
 
 D3D12_GPU_VIRTUAL_ADDRESS CConstantBuffer::GetGpuVirtualAddress(UINT32 index)
@@ -40,6 +42,19 @@ void CConstantBuffer::Init(ID3D12Device* device, UINT32 size, UINT32 count)
 void CConstantBuffer::Clear()
 {
 	m_currentIndex = 0;
+}
+
+void CConstantBuffer::tempDestroy()
+{
+	if (m_cbvBuffer)
+	{
+		if (m_cbvBuffer != nullptr)
+			m_cbvBuffer->Unmap(0, nullptr);
+
+		//m_cbvBuffer = nullptr;
+		m_cbvBuffer->Release();
+	}
+	if (m_cbvHeap) m_cbvHeap->Release();
 }
 
 void CConstantBuffer::PushData(void* buffer, UINT32 size)

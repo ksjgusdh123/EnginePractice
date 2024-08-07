@@ -50,4 +50,13 @@ void CDepthStencilBuffer::Init(ID3D12Device* device, ScreenInfo& info, DXGI_FORM
 
 	device->CreateDepthStencilView(m_dsvBuffer, &d3dDepthStencilViewDesc, m_dsvHandle);
 }
+
+void CDepthStencilBuffer::OnDestroy()
+{
+	if (m_dsvBuffer)
+		m_dsvBuffer->Release();
+
+	if (m_dsvHeap)
+		m_dsvHeap->Release();
+}
 	

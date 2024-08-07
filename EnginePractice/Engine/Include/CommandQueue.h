@@ -7,6 +7,7 @@ public:
 public:
 
 	void Init(ID3D12Device* device, class CSwapChain* swapChain);
+	void OnDestroy();
 
 	void WaitGpuComplete();
 

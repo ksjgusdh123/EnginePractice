@@ -24,8 +24,11 @@ struct ShaderInfo
 class CShader
 {
 public:
+
+public:
 	void Init(const std::wstring& path, ShaderInfo info = ShaderInfo());
 	void Update();
+	void tempDestroy();
 
 private:
 	void CreateShader(const std::wstring& path, const std::string& name, const std::string& version, ID3DBlob** blob, D3D12_SHADER_BYTECODE& shaderByteCode);

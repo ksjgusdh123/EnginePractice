@@ -83,6 +83,14 @@ void CShader::Update()
 	CEngine::GetInst()->GetFramework()->GetcmdQueue()->GetCmdList()->SetPipelineState(m_pipelineState);
 }
 
+void CShader::tempDestroy()
+{
+	if (m_vsBlob) m_vsBlob->Release();
+	if (m_errBlob) m_errBlob->Release();
+	if (m_psBlob) m_psBlob->Release();
+	if (m_pipelineState) m_pipelineState->Release();
+}
+
 void CShader::CreateShader(const std::wstring& path, const std::string& name, const std::string& version, ID3DBlob** blob, D3D12_SHADER_BYTECODE& shaderByteCode)
 {
 	UINT32 compileFlag = 0;

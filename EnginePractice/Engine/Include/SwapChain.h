@@ -7,7 +7,8 @@ public:
 
 public:
 	void Init(ID3D12Device* device, IDXGIFactory* factory, ID3D12CommandQueue* cmdQueue, ScreenInfo& info, bool windowed = true);
-	 
+	void OnDestroy();
+
 	void Present();
 	void SwapIndex();
 private:
