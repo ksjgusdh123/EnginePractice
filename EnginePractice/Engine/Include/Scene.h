@@ -18,6 +18,10 @@ struct GameObject
 class CScene
 {
 public:
+	CScene();
+	virtual ~CScene();
+
+public:
 	virtual bool Init(ID3D12Device* device);
 	virtual void Update(float elapsedTime);
 	virtual void PostUpdate(float elapsedTime);

@@ -2,6 +2,7 @@
 #include "GameFramework.h"
 #include "SceneManager.h"
 #include "CommandQueue.h"
+#include "Timer.h"
 
 DEFINITION_SINGLE(CEngine)
 bool CEngine::m_loop = true;
@@ -16,6 +17,7 @@ CEngine::~CEngine()
 {
     m_gameFramework->OnDestroy();
     delete m_gameFramework;
+    delete m_timer;
 }
 
 bool CEngine::Init(HINSTANCE hInst, int windowWidth, int windowHeight)
@@ -30,6 +32,9 @@ bool CEngine::Init(HINSTANCE hInst, int windowWidth, int windowHeight)
 
     if (!CSceneManager::GetInst()->Init(m_gameFramework->GetDevice()))
         return false;
+
+    m_timer = new CTimer();
+    m_timer->Init();
 
     return true;
 }
@@ -62,8 +67,9 @@ CGameFramework* CEngine::GetFramework()
 
 void CEngine::Logic()
 {
-    float elapsedTime = 0.f;
+    m_timer->Update();
 
+    float elapsedTime = m_timer->GetDeltaTime();
     // Scene이 교체될 경우 처음부터 다시 동작시킨다
     if (Update(elapsedTime))
         return;
@@ -76,6 +82,7 @@ void CEngine::Logic()
 
 bool CEngine::Update(float elapsedTime)
 {
+    ShowFps();
     return CSceneManager::GetInst()->Update(elapsedTime);
 }
 
@@ -131,6 +138,16 @@ bool CEngine::Create()
         return false;
 
     return true;
+}
+
+void CEngine::ShowFps()
+{
+    UINT fps = m_timer->GetFps();
+
+    WCHAR text[100] = L"";
+    ::wsprintf(text, L"FPS : %d", fps);
+
+    ::SetWindowText(m_hWnd, text);
 }
 
 LRESULT CEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

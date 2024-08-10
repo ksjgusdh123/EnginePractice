@@ -25,6 +25,9 @@
     <Filter Include="04. Resource">
       <UniqueIdentifier>{72e2a41b-762f-4c18-ae0a-0e18c217de2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Manager\01. Timer">
+      <UniqueIdentifier>{4d94289d-3a3d-4cf0-92e5-1d54881186b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -74,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>04. Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>01. Manager\01. Timer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>04. Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>01. Manager\01. Timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

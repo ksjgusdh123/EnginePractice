@@ -14,6 +14,7 @@ public:
 	virtual ~CMesh();
 
 public:
+	void Init(ID3D12Device* device, const std::vector<Vertex>& vertexBuffer);
 	void Init(ID3D12Device* device, const std::vector<Vertex>& vertexBuffer, const std::vector<UINT32>& indexBuffer);
 	void Render(ID3D12GraphicsCommandList* cmdList);
 

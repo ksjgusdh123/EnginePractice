@@ -10,6 +10,7 @@ CClientManager::CClientManager()
 CClientManager::~CClientManager()
 {
     CEngine::GetInst()->DestroyInst();
+    CSceneManager::GetInst()->DestroyInst();
 }
 
 bool CClientManager::Init(HINSTANCE hInst)

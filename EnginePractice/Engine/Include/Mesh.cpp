@@ -7,6 +7,13 @@ CMesh::CMesh()
 
 CMesh::~CMesh()
 {
+	if (m_vertexBuffer) m_vertexBuffer->Release();
+	if (m_indexBuffer) m_indexBuffer->Release();
+}
+
+void CMesh::Init(ID3D12Device* device, const std::vector<Vertex>& vertexBuffer)
+{
+	CreateVertexBuffer(device, vertexBuffer);
 }
 
 void CMesh::Init(ID3D12Device* device, const std::vector<Vertex>& vertexBuffer, const std::vector<UINT32>& indexBuffer)

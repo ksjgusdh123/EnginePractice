@@ -21,17 +21,20 @@ private:
 	void Register();	// 창 클래스 등록
 	bool Create();
 
+	void ShowFps();
+
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
-	CGameFramework* m_gameFramework;
+	CGameFramework	*m_gameFramework;
+	class CTimer	*m_timer;
 
-	HINSTANCE	m_hInst = 0;
-	HWND		m_hWnd = 0;
+	HINSTANCE		m_hInst = 0;
+	HWND			m_hWnd = 0;
 
-	Resolution	m_resolution;
+	Resolution		m_resolution;
 
-	static bool	m_loop;
+	static bool		m_loop;
 
 	DECLARE_SINGLE(CEngine)
 };
