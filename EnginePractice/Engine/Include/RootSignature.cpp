@@ -20,9 +20,10 @@ void CRootSignature::CreateRootSignature()
 	param[0].InitAsConstantBufferView(0); // b0
 	//param[1].InitAsDescriptorTable(_countof(ranges), ranges);
 
+	//D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
 	::ZeroMemory(&d3dRootSignatureDesc, sizeof(D3D12_ROOT_SIGNATURE_DESC));
-	d3dRootSignatureDesc.NumParameters = 1;
+	d3dRootSignatureDesc.NumParameters = _countof(param);
 	d3dRootSignatureDesc.pParameters = param;
 	d3dRootSignatureDesc.NumStaticSamplers = 0;
 	d3dRootSignatureDesc.pStaticSamplers = NULL;
